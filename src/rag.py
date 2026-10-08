@@ -1,4 +1,7 @@
 """Retrieval-augmented generation pipeline."""
+from google import genai
+from google.genai import types
+
 from .config import require_api_key, settings
 from .embeddings import embed_query
 from .vectorstore import query as vs_query
@@ -19,13 +22,14 @@ def build_context(results) -> str:
 
 def answer(question: str) -> tuple[str, list[str]]:
     """Return (answer_text, source_filenames)."""
-    import google.generativeai as genai
-
-    genai.configure(api_key=require_api_key())
+    client = genai.Client(api_key=require_api_key())
     vec = embed_query(question)
     results = vs_query(vec, settings.top_k)
     context = build_context(results)
-    model = genai.GenerativeModel(settings.chat_model, system_instruction=SYSTEM_PROMPT)
-    resp = model.generate_content(f"Context:\n{context}\n\nQuestion: {question}")
+    resp = client.models.generate_content(
+        model=settings.chat_model,
+        contents=f"Context:\n{context}\n\nQuestion: {question}",
+        config=types.GenerateContentConfig(system_instruction=SYSTEM_PROMPT),
+    )
     sources = sorted({m["source"] for m in results["metadatas"][0]})
     return resp.text, sources
