@@ -14,9 +14,9 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 class Settings:
     gemini_api_key: str = field(default_factory=lambda: os.getenv("GEMINI_API_KEY", ""))
     # Check Google AI Studio for current model IDs; these are sensible defaults.
-    chat_model: str = field(default_factory=lambda: os.getenv("GEMINI_CHAT_MODEL", "gemini-2.0-flash"))
+    chat_model: str = field(default_factory=lambda: os.getenv("GEMINI_CHAT_MODEL", "gemini-3.5-flash"))
     embedding_model: str = field(
-        default_factory=lambda: os.getenv("GEMINI_EMBEDDING_MODEL", "text-embedding-004")
+        default_factory=lambda: os.getenv("GEMINI_EMBEDDING_MODEL", "gemini-embedding-001")
     )
     chroma_dir: Path = field(
         default_factory=lambda: Path(os.getenv("CHROMA_DIR", str(PROJECT_ROOT / "data" / "chroma")))
