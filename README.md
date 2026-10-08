@@ -43,7 +43,17 @@ User question ──▶ embed query ──▶ vectorstore.py (Chroma, top-k) ─
 - [ ] Eval dashboard (RAGAS-style metrics on the golden set)
 - [ ] Docker + deploy (Azure)
 
+## Troubleshooting
+
+- **404 `model not found` on first run** — Google retires model IDs regularly (`text-embedding-004` and `gemini-2.0-flash` both died during this project's first run). Check the current list in AI Studio, then override with zero code changes:
+  ```bash
+  GEMINI_CHAT_MODEL=gemini-3.5-flash
+  GEMINI_EMBEDDING_MODEL=gemini-embedding-001
+  ```
+  Known-good pair as of Oct 2026: `gemini-embedding-001` + `gemini-3.5-flash`.
+- **503 `high demand`** — transient free-tier capacity. Wait ~20s and retry; the eval harness will pass once the spike clears.
+- **`google.generativeai` deprecation warning** — this repo uses the supported `google-genai` SDK (`requirements.txt` pins `google-genai>=1.0`).
+
 ## Notes
 
-- Model IDs change — check Google AI Studio for current chat/embedding model names and set them in `.env`.
 - Built as Portfolio Project 1 of an AI-skills coaching programme targeting AI Product Manager and AI Adoption / Transformation Lead roles.
